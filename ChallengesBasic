@@ -1,0 +1,13 @@
+1) Which tracks appeared in the most playlists? how many playlist did they appear in?
+This code joins the playlist and tracks databases using the Track ID as this is the primary key for both tables. Left join is used inside of join as we only want tracks that are in playlists.
+Then lists the name for the tracks for a much easier user experience.
+Finally, the code counts how many times each track is used in a playlist by counting the number of rows in playlistID and grouping by track ID and then placing in decending order.
+
+SELECT playlist_track.TrackId, 
+	   tracks.Name, 
+	   COUNT(playlist_track.PlaylistId) AS "Number of playlists appears in"
+FROM playlist_track
+LEFT JOIN tracks
+ON playlist_track.TrackId = tracks.TrackId
+GROUP BY 1
+ORDER BY 3 desc;
