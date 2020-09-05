@@ -11,3 +11,11 @@ LEFT JOIN tracks
 ON playlist_track.TrackId = tracks.TrackId
 GROUP BY 1
 ORDER BY 3 desc;
+
+2) IN PROGRESS
+SELECT tracks.Name, SUM(invoice_items.UnitPrice) AS "Revenue"
+from invoice_items
+JOIN tracks
+ON tracks.TrackId = invoice_items.TrackId
+GROUP BY tracks.TrackId
+ORDER BY 2 DESC;
