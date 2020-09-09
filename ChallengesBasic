@@ -36,13 +36,24 @@ GROUP BY albums.AlbumId
 ORDER BY 2 DESC;
 
 4) Which genres generate the most revenue?
-Same as above except using the genre table instead of the albums.
+Same as above except using the genre table instead of the albums. 
+In this instance I chose to round to 2dp as the numbers quickly became complex, therefore this table would be more useful for an overview table (eg. in presentation) than for working out statistics.
 
-SELECT genres.Name, SUM(invoice_items.UnitPrice) AS "Revenue"
+SELECT genres.Name, ROUND(SUM(invoice_items.UnitPrice),2) AS "Revenue"
 from tracks
 JOIN invoice_items
 	ON tracks.TrackId = invoice_items.TrackId
 JOIN genres
 	ON tracks.GenreId = genres.GenreId
 GROUP BY genres.GenreId
+ORDER BY 2 DESC;
+
+5) Which countries have the highest sales revenue? 
+This involved linking the two invoices tables and grouping by country.
+
+SELECT invoices.BillingCountry, ROUND(SUM(invoice_items.UnitPrice),2) AS "Total Country Revenue"
+from invoice_items
+JOIN invoices
+	ON invoice_items.InvoiceId = invoices.InvoiceId
+GROUP BY invoices.BillingCountry
 ORDER BY 2 DESC;
