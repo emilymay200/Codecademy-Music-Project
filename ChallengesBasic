@@ -12,10 +12,37 @@ ON playlist_track.TrackId = tracks.TrackId
 GROUP BY 1
 ORDER BY 3 desc;
 
-2) IN PROGRESS
+2) Which track generated the most revenue?
+This code joins the invoice and track databases using the track ID. It then calculates the total unit price by each track name (as each row is one purchase but not all the tracks are 99p).
+This is then put in a table with the name for easy reading and ordered by Revenue in descending order.
+
 SELECT tracks.Name, SUM(invoice_items.UnitPrice) AS "Revenue"
 from invoice_items
 JOIN tracks
 ON tracks.TrackId = invoice_items.TrackId
 GROUP BY tracks.TrackId
+ORDER BY 2 DESC;
+
+3) Which track generated the most revenue?
+This code includes the album data also. Instead of grouping by track ID we use the album ID to link the album table and display the most profitable albums.
+
+SELECT albums.Title, SUM(invoice_items.UnitPrice) AS "Revenue"
+from tracks
+JOIN invoice_items
+	ON tracks.TrackId = invoice_items.TrackId
+JOIN albums
+	ON tracks.AlbumId = albums.AlbumId
+GROUP BY albums.AlbumId
+ORDER BY 2 DESC;
+
+4) Which genres generate the most revenue?
+Same as above except using the genre table instead of the albums.
+
+SELECT genres.Name, SUM(invoice_items.UnitPrice) AS "Revenue"
+from tracks
+JOIN invoice_items
+	ON tracks.TrackId = invoice_items.TrackId
+JOIN genres
+	ON tracks.GenreId = genres.GenreId
+GROUP BY genres.GenreId
 ORDER BY 2 DESC;
