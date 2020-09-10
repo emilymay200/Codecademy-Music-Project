@@ -1,0 +1,7 @@
+Do longer or shorter length albums tend to generate more revenue?
+IN PROGRESS
+With TrackNo AS (
+SELECT COUNT(tracks.TrackId) AS "TrackNumber"
+from tracks
+GROUP BY tracks.AlbumId
+)
