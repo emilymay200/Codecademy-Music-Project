@@ -57,3 +57,51 @@ JOIN invoices
 	ON invoice_items.InvoiceId = invoices.InvoiceId
 GROUP BY invoices.BillingCountry
 ORDER BY 2 DESC;
+
+6) Which percentage of total revenue does each country make up?
+Initially I found this question complicated. However, upon further research I discovered that you were able to nest another SELECT phrase within a SELECT phase. This made the calculation much more straight forward.
+I removed the 2dp as this was a new calculation.
+
+SELECT invoices.BillingCountry AS "Country", 
+	((SUM(invoice_items.UnitPrice)/ (SELECT SUM(invoice_items.UnitPrice) from invoice_items)) *100)
+		AS "Percentage of total revenue"
+from invoice_items
+JOIN invoices
+	ON invoice_items.InvoiceId = invoices.InvoiceId
+GROUP BY invoices.BillingCountry
+ORDER BY 2 DESC;
+
+7) How many customers did each employee support?
+
+SELECT employees.EmployeeId AS "Employee ID",
+	employees.LastName AS "Employee Last Name",
+	SUM(customers.CustomerId) AS "Number of customers helped"
+FROM employees
+JOIN customers
+ON customers.SupportRepId = employees.EmployeeId
+GROUP BY 1;
+
+8) What is the employee's average revenue per sale?
+This involves the joining of three tables: the customers, the invoices and the employees to calculate their average invoice per sale.
+
+SELECT employees.EmployeeId AS "Employee ID",
+	employees.LastName AS "Employee Last Name",
+	avg(invoices.Total) AS "Average revenue per sale"
+FROM employees
+JOIN customers
+	ON customers.SupportRepId = employees.EmployeeId
+JOIN invoices
+	ON customers.CustomerId = invoices.CustomerId
+	
+9) What is each employee's total sales?
+
+SELECT employees.EmployeeId AS "Employee ID",
+	employees.LastName AS "Employee Last Name",
+	sum(invoices.Total) AS "Total sales"
+FROM employees
+JOIN customers
+	ON customers.SupportRepId = employees.EmployeeId
+JOIN invoices
+	ON customers.CustomerId = invoices.CustomerId
+GROUP BY 1;
+GROUP BY 1;
