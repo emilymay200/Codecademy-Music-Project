@@ -16,3 +16,23 @@ JOIN tracks
 JOIN invoice_items
 	ON invoice_items.TrackId = tracks.TrackID
 GROUP BY NoOfTracks;
+
+2) Is the number of times a track appears in a playlist a good indicator of sales?
+IN PROGRESS
+
+WITH PlaylistNo AS (
+SELECT playlist_track.TrackId, 
+	   COUNT(playlist_track.PlaylistId) AS "NoPlaylists"
+FROM playlist_track
+GROUP BY 1
+)
+SELECT NoPlaylists AS "Number of playlists appears in",
+		ROUND(SUM(invoice_items.UnitPrice),3) AS "Revenue" 
+FROM PlaylistNo
+JOIN playlist_track
+	ON PlaylistNo.TrackId = playlist_track.TrackId
+JOIN tracks 
+	ON tracks.TrackId = tracks.TrackId
+JOIN invoice_items
+	ON invoice_items.TrackId = tracks.TrackID
+GROUP BY 1;
