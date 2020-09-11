@@ -1,7 +1,18 @@
-Do longer or shorter length albums tend to generate more revenue?
-IN PROGRESS
+1) Do longer or shorter length albums tend to generate more revenue?
+This groups albums by how many tracks they have by creating a temporary table called "TrackNo" that lists the number of tracks in each albums.
+This then calculates the revenue for each album and groups them by how many tracks they have.
+
 With TrackNo AS (
-SELECT COUNT(tracks.TrackId) AS "TrackNumber"
+SELECT AlbumId, COUNT(tracks.TrackId) AS "NoOfTracks"
 from tracks
 GROUP BY tracks.AlbumId
 )
+SELECT NoOfTracks, ROUND(SUM(invoice_items.UnitPrice),3) AS "Revenue" 
+from TrackNo
+JOIN albums 
+	ON TrackNo.AlbumId = albums.AlbumId
+JOIN tracks 
+	ON tracks.AlbumId = albums.AlbumId
+JOIN invoice_items
+	ON invoice_items.TrackId = tracks.TrackID
+GROUP BY NoOfTracks;
