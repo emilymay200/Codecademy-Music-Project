@@ -1,0 +1,10 @@
+How much revenue is generated each year, and what is its percent change from the previous year?
+WITH YearRev AS (
+SELECT CAST(strftime('%Y',invoices.InvoiceDate) AS int) AS "Year",
+		SUM(invoice_items.UnitPrice) AS "Revenue"
+from invoices
+JOIN invoice_items
+ON invoices.InvoiceId = invoice_items.InvoiceId
+GROUP BY 1)
+SELECT Year, Revenue
+FROM YearRev;
