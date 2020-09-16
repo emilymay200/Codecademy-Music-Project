@@ -1,10 +1,22 @@
 How much revenue is generated each year, and what is its percent change from the previous year?
-WITH YearRev AS (
+This one took a lot of thinking to do! 
+In the end I settled with creating two temp tables: one to query the year and the year's revenue. 
+The second to query the previous year's revenue using the lag function. This requiured a second table as I was referring to an alias from the first query.
+Using this I could then calculate the percentage change from the previous year and round the Revenues to 3dp to make them easier to read.
+
+WITH YearRev as (
 SELECT CAST(strftime('%Y',invoices.InvoiceDate) AS int) AS "Year",
 		SUM(invoice_items.UnitPrice) AS "Revenue"
 from invoices
 JOIN invoice_items
 ON invoices.InvoiceId = invoice_items.InvoiceId
-GROUP BY 1)
-SELECT Year, Revenue
-FROM YearRev;
+GROUP BY 1
+ORDER BY 1),
+
+PrevYear as (
+SELECT *, LAG(Revenue) OVER (ORDER BY Year) AS "PrevYear"
+FROM YearRev
+
+SELECT Year, ROUND(Revenue,3) AS "Revenue",
+	ROUND((((Revenue - PrevYear) / PrevYear) * 100), 3) AS "Percentage Change"
+FROM PrevYear;
